@@ -1,0 +1,23 @@
+{
+  "name": "all-cornell-courses",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "request": "^2.88.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanywang2/all-cornell-courses.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hanywang2/all-cornell-courses/issues"
+  },
+  "homepage": "https://github.com/hanywang2/all-cornell-courses#readme"
+}
