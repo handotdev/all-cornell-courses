@@ -1,37 +1,37 @@
 const request = require('request');
+const fs = require('fs');
 
 function scan() {
-let result = [];
-const ros = 'FA19'
-
+    const ros = 'FA19';
     let rosterObj = {roster: ros, subjects: []};
 
-    request(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${ros}`, { json: true }, (err, res, body) => {
-    if (err) { return console.log(err); }
-    body.data.subjects.map(async function(subject) {
-        const sub = subject.value;
-        
-        rosterObj.subjects[sub] = await classes(sub);
-        console.log(rosterObj);
-    });
+    request(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${ros}`, { json: true }, (err, res, outer) => {
+        outer.data.subjects.map((subject, j) => {
+            const sub = subject.value;
+            
+            request(`https://classes.cornell.edu/api/2.0/search/classes.json?roster=${ros}&subject=${sub}`, { json: true }, (err, res, body) => {
+                if (body) {
+                    const status = body.status;
+                    const append = status != 'error' ? body.data.classes : null;
+                    let subjectObj = {subject: sub, classes: append};
+                    rosterObj.subjects.push(subjectObj);
+
+                    if (j === outer.data.subjects.length - 1) {
+                        fs.writeFileSync(`data/${ros}.json`, JSON.stringify(rosterObj));
+                        console.log(`Completed ${ros}`);
+                    }
+                }
+            });
+        });
     });
 }
 
-async function classes(sub) {
-    request(`https://classes.cornell.edu/api/2.0/search/classes.json?roster=SP19&subject=${sub}`, { json: true }, (err, res, body) => {
-        const status = body.status;
-        if (status != 'error') {
-            return body.data.classes;
-        } else {
-            return null;
-        }
+function getRosters() {
+    request(`https://classes.cornell.edu/api/2.0/config/rosters.json`, { json: true }, (err, res, rosters) => {
+        rosters.data.rosters.map(ros => {
+            console.log(ros.slug);
+        })
     });
 }
 
-function test() {
-    request(`https://classes.cornell.edu/api/2.0/search/classes.json?roster=SP19&subject=CS`, { json: true }, (err, res, body) => {
-        console.log(body.data.classes);
-    });
-}
-
-scan();
+getRosters();
