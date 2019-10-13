@@ -1,6 +1,7 @@
 const request = require('request');
 
-const ros = 'WI19';
+const rosters = ["FA14","WI15","SP15","SU15","FA15","WI16","SP16","SU16","FA16","WI17","SP17","SU17","FA17","WI18","SP18","SU18","FA18","WI19","SP19","SU19","FA19","WI20"];
+const ros = rosters[21];
 let result = [];
 
 request(`https://classes.cornell.edu/api/2.0/config/subjects.json?roster=${ros}`, { json: true }, (err, res, outer) => {
